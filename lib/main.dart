@@ -7,6 +7,7 @@ import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:studyhelper/Dashboard.dart';
 
 void main() {
   runApp(MaterialApp(
@@ -18,6 +19,7 @@ void main() {
     routes: {
       "/": (context) => const Home(),
       "/overview": (context) => const Overview(),
+      "/dashboard": (context) => Dashboard(),
     },
   ));
 }
@@ -69,6 +71,10 @@ class _HomeState extends State<Home> {
                 title: const Text("Calendar"),
                 onTap: () => Navigator.pushNamed(context, "/overview"),
               ),
+              ListTile(
+                title: const Text("Dashboard"),
+                onTap: () => Navigator.pushNamed(context, "/dashboard"),
+              )
             ],
           ),
         ),

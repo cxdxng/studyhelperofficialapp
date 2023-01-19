@@ -1,13 +1,10 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:studyhelper/Calendar.dart';
-
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:studyhelper/Dashboard.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 void main() {
   runApp(MaterialApp(
@@ -15,12 +12,7 @@ void main() {
     supportedLocales: [
       const Locale('de', 'DE'),
     ],
-    initialRoute: "/",
-    routes: {
-      "/": (context) => const Home(),
-      "/overview": (context) => const Overview(),
-      "/dashboard": (context) => Dashboard(),
-    },
+    home: Home(),
   ));
 }
 
@@ -45,6 +37,31 @@ class _HomeState extends State<Home> {
   // Unformatted date for uploading to mysql
   String mysqlDate = "";
 
+  // Images for Cards
+  AssetImage sis = const AssetImage("assets/sis.png");
+  AssetImage horde = const AssetImage("assets/horde.png");
+  AssetImage lea = const AssetImage("assets/lea.png");
+  AssetImage leaIntern = const AssetImage("assets/leaIntern.png");
+  AssetImage miaImg = const AssetImage("assets/mia.png");
+  AssetImage mensaImage = const AssetImage("assets/mensaImage.png");
+  AssetImage praktoImage = const AssetImage("assets/praktoImage.png");
+  AssetImage stundenplan = const AssetImage("assets/stundenplan.png");
+  AssetImage zeitplanImage = const AssetImage("assets/zeitplanImage.png");
+
+  // Links to websites
+  String linkSIS = "https://sis.h-brs.de";
+  String linkHorde = "https://horde.inf.h-brs.de";
+  String linkLea = "https://lea.h-brs.de";
+
+  String miaLink = "https://mia.h-brs.de/";
+  String linkEva = "https://eva.inf.h-brs.de";
+  String linkPrakto = "https://praktomat.inf.h-brs.de/";
+  String stundenplanEva = "https://eva2.inf.h-brs.de/stundenplan/";
+  String zeitplan = "https://horde.inf.h-brs.de/fbz.html";
+
+  String mensa =
+      "https://www.studierendenwerk-bonn.de/essen-trinken/mensen-cafes/mensa-sankt-augustin/";
+
   @override
   void initState() {
     super.initState();
@@ -56,27 +73,6 @@ class _HomeState extends State<Home> {
       child: Scaffold(
         appBar: AppBar(
           title: const Text("Study Helper"),
-        ),
-        drawer: Drawer(
-          child: ListView(
-            children: [
-              DrawerHeader(
-                child: Center(child: makeDarkText("Overview")),
-              ),
-              ListTile(
-                title: const Text("Home"),
-                onTap: () => Navigator.pushNamed(context, "/"),
-              ),
-              ListTile(
-                title: const Text("Calendar"),
-                onTap: () => Navigator.pushNamed(context, "/overview"),
-              ),
-              ListTile(
-                title: const Text("Dashboard"),
-                onTap: () => Navigator.pushNamed(context, "/dashboard"),
-              )
-            ],
-          ),
         ),
         body: Builder(builder: (context) {
           return Container(
@@ -90,6 +86,19 @@ class _HomeState extends State<Home> {
                   Padding(
                     padding: const EdgeInsets.all(15.0),
                     child: makeText("Welcome to StudyHelper"),
+                  ),
+                  Expanded(
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          makeRow(horde, sis, linkHorde, linkSIS),
+                          makeRow(lea, miaImg, linkLea, miaLink),
+                          makeRow(mensaImage, praktoImage, mensa, linkPrakto),
+                          makeRow(stundenplan, zeitplanImage, stundenplanEva,
+                              zeitplan),
+                        ],
+                      ),
+                    ),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(15.0),
@@ -121,5 +130,42 @@ Widget makeDarkText(String data) {
     data,
     style: const TextStyle(
         fontSize: 26, color: Colors.black, fontWeight: FontWeight.bold),
+  );
+}
+
+Row makeRow(image1, image2, link1, link2) {
+  return Row(
+    mainAxisSize: MainAxisSize.max,
+    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+    children: [
+      Expanded(
+        child: InkWell(
+          onTap: () {
+            launchUrl(Uri.parse(link1));
+          },
+          child: Card(
+            elevation: 10,
+            child: Padding(
+              padding: EdgeInsets.all(10),
+              child: Center(child: Image(image: image1)),
+            ),
+          ),
+        ),
+      ),
+      Expanded(
+        child: InkWell(
+          onTap: () {
+            launchUrl(Uri.parse(link2));
+          },
+          child: Card(
+            elevation: 10,
+            child: Padding(
+              padding: EdgeInsets.all(10),
+              child: Center(child: Image(image: image2)),
+            ),
+          ),
+        ),
+      ),
+    ],
   );
 }
